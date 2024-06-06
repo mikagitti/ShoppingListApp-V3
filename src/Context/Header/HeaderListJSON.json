@@ -1,0 +1,5 @@
+[
+    { "id": 2, "headerName": "Shopping list", "componentName": "EditProductsComponent" },
+    { "id": 3, "headerName": "Edit list", "componentName": "EditProductsComponent" },
+    { "id": 4, "headerName": "Edit products", "componentName": "EditProductsComponent" }
+]
