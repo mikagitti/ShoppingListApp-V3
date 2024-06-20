@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { CSSProperties } from '@mui/material/styles/createMixins';
-import { GetAdminByUserNameAndPassword } from '@/Database/dbConnectionV2';
+import { GetAdminByUserNameAndPassword } from '@/Database/dbConnectionV3';
 import LoginContext from "@/Context/login/LoginContext";
 
 
@@ -64,12 +64,12 @@ export default function Login({ onClose} : ModalProps) {
         
         <Box
           component="form"
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 300 }}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 2, minwidth: 300 }}
           onSubmit={handleSubmit}
           noValidate
           autoComplete="off"
         >
-          <Typography variant="h6">Login Form</Typography>
+          <Typography variant="h6">Type your username and password</Typography>
 
           <TextField
             label="Username"

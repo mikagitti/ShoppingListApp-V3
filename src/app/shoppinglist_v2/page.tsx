@@ -3,17 +3,17 @@
 import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { GetShoppingListsByUserId, ShoppingListType, UpdateShoppingListName } from "@/Database/dbConnectionV2";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+import { GetShoppingListsByUserId, UpdateShoppingListName } from "@/Database/dbConnectionV3";
 import { NewShoppingListModal } from "./components/NewShoppingListModal";
 import { DeleteShoppingListModal } from "./components/DeleteShoppingListModal";
 import { EditShoppingListNameModal } from "./components/EditShoppingListNameModal";
 import ShoppingListCard from "./components/ShoppingListCard";
-
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LoginContext from "@/Context/login/LoginContext";
-import Card from "./components/Card/Card";
+import { ShoppingListType } from "@/Database/types";
 
 type UserProps = {
     userId: number;
@@ -58,8 +58,9 @@ export default function ShoppingListV2( {userId} : UserProps) {
         if (selectedUser != null)
         {
             const result:ShoppingListType[] = await GetShoppingListsByUserId(selectedUser?.id);
-            setShoppingLists(result);
-        }        
+            if (result)
+                setShoppingLists(result);
+        }
     }
 
     const addNewShoppingList = () => {
@@ -109,7 +110,7 @@ export default function ShoppingListV2( {userId} : UserProps) {
                     
                     { /*LIST ALL SHOPPING LISTS*/ }
                     {
-                    shoppingLists?.map((x, index) => {
+                    shoppingLists.map((x, index) => {
                         return(    
                             <Grid key={index} item xs={12} sm={6} xl={3}>                                
                             

@@ -6,12 +6,12 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import { 
-    GetShoppingListProductsByShoppingListId, 
-    ShoppingListProductsType,
+    GetShoppingListProductsByShoppingListId,     
     UpdateProductCheckedInShoppingListByShoppingListIdAndProductId,
-} from "@/Database/dbConnectionV2";
+} from "@/Database/dbConnectionV3";
 
 import ProductListItem, { iconType } from "../components/productListItem";
+import { ShoppingListProductsType } from "@/Database/types";
 
 const IconPropsForAddingProduct : iconType = {
     icon: AddCircleIcon,
@@ -42,13 +42,13 @@ export default function Page({ params }: { params: { id: number, name: string } 
 
     const checkProduct = (product: ShoppingListProductsType) => {
         setShoppingListProducts((products) => 
-        products.map( (item) => item.id === product.id ? {...item, is_checked: !item.is_checked } : item) )
+        products.map( (item) => item.id === product.id ? {...item, checked: !item.checked } : item) )
 
         saveProductCheckStatusToShoppingList(product);
     }
 
     const saveProductCheckStatusToShoppingList = async(product: ShoppingListProductsType) => {
-        await UpdateProductCheckedInShoppingListByShoppingListIdAndProductId(product.shoppinglist_id, product.product_id, !product.is_checked);
+        await UpdateProductCheckedInShoppingListByShoppingListIdAndProductId(params.id, product.id, !product.checked);
     }
 
     return (            
@@ -57,7 +57,7 @@ export default function Page({ params }: { params: { id: number, name: string } 
             {
             
             shoppingListProducts.map((product, index) => 
-                    product.is_checked == false &&                    
+                    product.checked == false &&                    
                     <div key={index} style={ {margin: '10px'}}>
                         <ProductListItem icon={IconPropsForAddingProduct} name={product.name} iconAction={() => checkProduct(product)} />                            
                     </div>                    
@@ -73,7 +73,7 @@ export default function Page({ params }: { params: { id: number, name: string } 
             { 
             showCheckedList &&
                 shoppingListProducts.map((product, index) => (
-                    product.is_checked == true &&
+                    product.checked == true &&
                  
                         <div key={index} style={ {margin: '10px' }}>                            
                             <ProductListItem icon={IconPropsForDeletingProduct} name={product.name} iconAction={() => checkProduct(product)} />                            

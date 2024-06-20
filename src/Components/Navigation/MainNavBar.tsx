@@ -135,7 +135,7 @@ export default function MainNavBar() {
                     {
                     selectedUser ? 
                     <Button onClick={() => clearSelectedUser() }>
-                        <LoginButton user={selectedUser.username}>Logout</LoginButton>
+                        <LoginButton user={selectedUser.name}>Logout</LoginButton>
                     </Button> :
                     <Button>
                         <AppBarIconLink sx={ {color: theme.palette.primary.contrastText} } href='/login'>
@@ -176,7 +176,7 @@ export default function MainNavBar() {
                             {
                                 selectedUser ? 
                                 <Button onClick={() => clearSelectedUser() }>
-                                    <LoginButton user={selectedUser.username}>Logout</LoginButton>
+                                    <LoginButton user={selectedUser.name}>Logout</LoginButton>
                                 </Button> :
                                 <Button>
                                     <AppBarIconLink sx={ {color: theme.palette.primary.contrastText} } href='/login'>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { CSSProperties } from '@mui/material/styles/createMixins';
-import { AddNewShoppingListForUser } from '@/Database/dbConnectionV2';
 import { AddNewProduct} from '@/Database/dbConnectionV3';
 
 
