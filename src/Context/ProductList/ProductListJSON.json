@@ -1,0 +1,5 @@
+[
+    {"id": "1", "productName": "Banana", "productInShoppingList": false},
+    {"id": "2", "productName": "Salt", "productInShoppingList": false},
+    {"id": "3", "productName": "Milk", "productInShoppingList": false}
+]
