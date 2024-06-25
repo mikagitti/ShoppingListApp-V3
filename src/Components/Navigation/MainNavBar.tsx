@@ -18,7 +18,6 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BungalowIcon from "@mui/icons-material/Bungalow";
 import InfoIcon from "@mui/icons-material/Info";
-import EngineeringIcon from "@mui/icons-material/Engineering";
 import MenuIcon from "@mui/icons-material/Menu";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 
@@ -104,9 +103,9 @@ export default function MainNavBar() {
                     </AppBarIconLink>
 
                     <AppBarIconLink href="/shoppinglist_v2">
-                         <EngineeringIcon sx={iconStyle} />
+                         <ShoppingCartIcon sx={iconStyle} />
                          <Typography sx={customTypography}>
-                              (New) Shopping list
+                              Shopping list
                          </Typography>
                     </AppBarIconLink>
 
@@ -214,7 +213,7 @@ export default function MainNavBar() {
                                    </AppBarIconLink>
 
                                    <AppBarIconLink href="/shoppinglist_v2">
-                                        <EngineeringIcon sx={iconStyle} />
+                                        <ShoppingCartIcon sx={iconStyle} />
                                    </AppBarIconLink>
 
                                    <AppBarIconLink href="/about">
