@@ -409,7 +409,7 @@ export const RemoveProductFromShoppingList = async (
 ) => {
      console.log("RemoveProductFromShoppingList");
 
-     const apiClause = `${ipAddress}/${shoppingListProductsApi}/${shoppingListId}?productId=${productId}`;
+     const apiClause = `${ipAddress}/${shoppingListProductsApi}/${shoppingListId}/product/${productId}`;
 
      try {
           const response = await axios.delete(apiClause, {
