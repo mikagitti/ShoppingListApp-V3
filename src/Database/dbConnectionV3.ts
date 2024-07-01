@@ -185,21 +185,26 @@ export const DeleteProduct = async (productid: number) => {
 /*****************************************/
 export const GetShoppingListsByUserId = async (
      userId: number
-): Promise<ShoppingListType[]> => {
+): Promise<ShoppingListType[] | { message: string } | null> => {
      console.log("GetShoppingListsByUserId");
 
-     let shoppingLists: ShoppingListType[] = [];
+     let shoppingLists: ShoppingListType[] | null = null;
+     let message: string | null = null;
      let catchError;
 
      const apiClause = `${ipAddress}/${shoppingListsApi}/user/${userId}`;
 
      await axios
-          .get<ShoppingListType[]>(apiClause)
+          .get<ShoppingListType[] | { message: string }>(apiClause)
           .then((response) => {
-               const shoppingListArray = response.data;
-               console.log(shoppingListArray);
-
-               shoppingLists = shoppingListArray;
+               if (Array.isArray(response.data)) {
+                    shoppingLists = response.data;
+                    console.log("Shopping lists:", shoppingLists);
+               } else if (response.data && "message" in response.data) {
+                    message = response.data.message;
+                    console.log("Message:", message);
+                    return message;
+               }
           })
           .catch((error) => {
                console.error("There was an error!", error);
@@ -208,13 +213,7 @@ export const GetShoppingListsByUserId = async (
 
      if (catchError) {
           console.log("GetShoppingListsByUserId error");
-          return [
-               {
-                    id: -1,
-                    name: "-1 empty",
-                    user_id: -1,
-               },
-          ];
+          return null;
      }
      return shoppingLists;
 };
