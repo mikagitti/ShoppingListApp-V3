@@ -42,6 +42,31 @@ export const GetAllUsers = async (): Promise<UserType[] | null> => {
 };
 
 /************************/
+/***** ADD new user *****/
+/************************/
+export const AddNewUser = async (name: string): Promise<UserType | null> => {
+     console.log("*** Add new user ***");
+
+     let newUser: UserType | null = null;
+
+     try {
+          const response = await axios.post(
+               `${ipAddress}/users`,
+               {
+                    name,
+               },
+               { withCredentials: true }
+          );
+          console.log("New user added:", response.data);
+          newUser = response.data;
+     } catch (error) {
+          console.error("Error adding new user:", error);
+     } finally {
+          return newUser;
+     }
+};
+
+/************************/
 /***** UPDATE user ******/
 /************************/
 export const UpdateUserName = async (user: User): Promise<boolean> => {
@@ -63,6 +88,23 @@ export const UpdateUserName = async (user: User): Promise<boolean> => {
           console.error("Error updating user:", error);
      } finally {
           return true;
+     }
+};
+
+/************************/
+/***** DELETE user ******/
+/************************/
+export const DeleteUserById = async (id: number): Promise<boolean> => {
+     console.log("*** Delete user ***");
+
+     const apiClause = `${ipAddress}/users/${id}`;
+
+     try {
+          await axios.delete(apiClause);
+          return true;
+     } catch (error) {
+          console.error("Error deleting user:", error);
+          return false;
      }
 };
 

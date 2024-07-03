@@ -1,41 +1,33 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
-import { CSSProperties } from "@mui/material/styles/createMixins";
-import { AddNewAdmin } from "@/Database/dbConnectionV3";
+import { modalStyle, backgroundStyle } from "./style";
+import { GetAdminByUserNameAndPassword } from "@/Database/dbConnectionV3";
+import LoginContext from "@/Context/login/LoginContext";
 
-interface ModalProps {
+type ModalProps = {
      onClose: () => void;
-}
-
-const modalStyle: CSSProperties = {
-     position: "fixed",
-     top: 0,
-     left: 0,
-     right: 0,
-     bottom: 0,
-     backgroundColor: "rgba(0, 0, 0, 0.7)",
-     display: "flex",
-     justifyContent: "center",
-     alignItems: "center",
 };
 
-const backgroundStyle = {
-     bgcolor: "background.paper",
-     padding: "15px 25px 35px 25px",
-     borderRadius: "30px",
-     border: "solid",
-};
+export default function Login({ onClose }: ModalProps) {
+     const { selectAdmin } = useContext(LoginContext);
 
-export default function Register({ onClose }: ModalProps) {
      const [username, setUsername] = useState<string>("");
      const [password, setPassword] = useState<string>("");
 
      const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-          console.log("Submitting:", { username, password });
+
           if (username && password) {
-               await AddNewAdmin(username, password);
-               onClose();
+               const isAdminUserValid = await GetAdminByUserNameAndPassword(
+                    username,
+                    password
+               );
+               console.log("User is: ", isAdminUserValid);
+
+               if (isAdminUserValid) {
+                    selectAdmin(username);
+                    onClose();
+               }
           } else {
                console.log("Submit error: username or password missing");
           }
@@ -54,13 +46,15 @@ export default function Register({ onClose }: ModalProps) {
                               display: "flex",
                               flexDirection: "column",
                               gap: 2,
-                              width: 300,
+                              minwidth: 300,
                          }}
                          onSubmit={handleSubmit}
                          noValidate
                          autoComplete="off"
                     >
-                         <Typography variant="h6">Register</Typography>
+                         <Typography variant="h6">
+                              Type your username and password
+                         </Typography>
 
                          <TextField
                               label="Username"
@@ -92,7 +86,7 @@ export default function Register({ onClose }: ModalProps) {
                                    variant="contained"
                                    color="primary"
                               >
-                                   Save
+                                   Login
                               </Button>
 
                               <Button
