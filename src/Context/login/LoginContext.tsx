@@ -5,6 +5,8 @@ import React, { createContext, useState, ReactNode, useEffect } from "react";
 
 interface ILoginContext {
      userList: UserType[];
+     addNewUser: (user: UserType) => void;
+     removeUserFromList: (user: UserType) => void;
      selectedUser: UserType | null;
      selectUser: (id: number) => void;
      clearSelectedUser: () => void;
@@ -15,6 +17,8 @@ interface ILoginContext {
 
 const defaultLoginState: ILoginContext = {
      userList: [],
+     addNewUser: (user: UserType) => {},
+     removeUserFromList: (user: UserType) => {},
      selectedUser: null,
      selectUser: (id: number) => {},
      clearSelectedUser: () => {},
@@ -41,6 +45,14 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
           getUserFromDb();
      }, []);
 
+     const addNewUser = (user: UserType) => {
+          setUserList([...userList, user]);
+     };
+
+     const removeUserFromList = (user: UserType) => {
+          setUserList(userList.filter((x) => x.id !== user.id));
+     };
+
      const selectUser = (id: number) => {
           const findUser = userList.find((x) => x.id === id);
 
@@ -65,6 +77,8 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
           <LoginContext.Provider
                value={{
                     userList,
+                    addNewUser,
+                    removeUserFromList,
                     selectedUser,
                     selectUser,
                     clearSelectedUser,
