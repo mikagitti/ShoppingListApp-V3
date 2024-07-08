@@ -1,184 +1,151 @@
-"use client";
+'use client';
 
-import { useContext, useEffect, useState } from "react";
-import Link from "next/link";
+import { useContext, useEffect, useState } from 'react';
+import Link from 'next/link';
 
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import SettingsIcon from "@mui/icons-material/Settings";
+import { Box, Grid, IconButton, Typography } from '@mui/material';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import SettingsIcon from '@mui/icons-material/Settings';
 
-import {
-     GetShoppingListsByUserId,
-     UpdateShoppingListName,
-} from "@/Database/dbConnectionV3";
-import { NewShoppingListModal } from "./components/NewShoppingListModal";
-import { DeleteShoppingListModal } from "./components/DeleteShoppingListModal";
-import { EditShoppingListNameModal } from "./components/EditShoppingListNameModal";
-import ShoppingListCard from "./components/ShoppingListCard";
-import LoginContext from "@/Context/login/LoginContext";
-import { ShoppingListType } from "@/Database/types";
+import { GetShoppingListsByUserId, UpdateShoppingListName, GetShoppingListProductsByShoppingListId } from '@/Database/dbConnectionV3';
 
-type UserProps = {
-     userId: number;
+import { NewShoppingListModal } from './components/NewShoppingListModal';
+import { DeleteShoppingListModal } from './components/DeleteShoppingListModal';
+import { EditShoppingListNameModal } from './components/EditShoppingListNameModal';
+import ShoppingListCard from './components/ShoppingListCard';
+import LoginContext from '@/Context/login/LoginContext';
+import { ShoppingListType } from '@/Database/types';
+
+type ShoppingListDetailProps = {
+  shoppingList: ShoppingListType;
+  productCount: number;
 };
 
-export default function ShoppingListV2({ userId }: UserProps) {
-     const { selectedUser } = useContext(LoginContext);
+export default function ShoppingListV2() {
+  const { selectedUser } = useContext(LoginContext);
 
-     const [isNewShoppingListModelOpen, setIsNewShoppingListModelOpen] =
-          useState<boolean>(false);
-     const [isDeleteShoppingListModelOpen, setIsDeleteShoppingListModelOpen] =
-          useState<boolean>(false);
-     const [isEditShoppingListModelOpen, setIsEditShoppingListModelOpen] =
-          useState<boolean>(false);
-     const [selectedShoppingList, setSelectedShoppingList] =
-          useState<ShoppingListType | null>(null);
-     const [shoppingLists, setShoppingLists] = useState<ShoppingListType[]>([]);
+  const [isNewShoppingListModelOpen, setIsNewShoppingListModelOpen] = useState<boolean>(false);
+  const [isDeleteShoppingListModelOpen, setIsDeleteShoppingListModelOpen] = useState<boolean>(false);
+  const [isEditShoppingListModelOpen, setIsEditShoppingListModelOpen] = useState<boolean>(false);
+  const [selectedShoppingList, setSelectedShoppingList] = useState<ShoppingListType | null>(null);
+  const [shoppingLists, setShoppingLists] = useState<ShoppingListDetailProps[]>([]);
 
-     useEffect(() => {
-          updateUserShoppingListView();
-     }, [
-          isNewShoppingListModelOpen,
-          isDeleteShoppingListModelOpen,
-          isEditShoppingListModelOpen,
-     ]);
+  useEffect(() => {
+    updateUserShoppingListView();
+  }, [isNewShoppingListModelOpen, isDeleteShoppingListModelOpen, isEditShoppingListModelOpen]);
 
-     const onCloseEdit = () => {
-          updateUserShoppingListView();
-          setIsEditShoppingListModelOpen(false);
-     };
+  const onCloseEdit = () => {
+    updateUserShoppingListView();
+    setIsEditShoppingListModelOpen(false);
+  };
 
-     const deleteShoppingList = (shoppingList: ShoppingListType) => {
-          setSelectedShoppingList(shoppingList);
-          setIsDeleteShoppingListModelOpen(true);
-     };
+  const deleteShoppingList = (shoppingList: ShoppingListType) => {
+    setSelectedShoppingList(shoppingList);
+    setIsDeleteShoppingListModelOpen(true);
+  };
 
-     const onCloseDelete = () => {
-          updateUserShoppingListView();
-          setIsDeleteShoppingListModelOpen(false);
-     };
+  const onCloseDelete = () => {
+    updateUserShoppingListView();
+    setIsDeleteShoppingListModelOpen(false);
+  };
 
-     const updateUserShoppingListView = async () => {
-          if (selectedUser != null) {
-               const result: ShoppingListType[] | { message: string } | null =
-                    await GetShoppingListsByUserId(selectedUser?.id);
+  const updateUserShoppingListView = async () => {
+    if (selectedUser != null) {
+      const result: ShoppingListType[] | { message: string } | null = await GetShoppingListsByUserId(selectedUser?.id);
 
-               if (result != null && "message" in result)
-                    console.log(result.message);
-               if (Array.isArray(result)) setShoppingLists(result);
-          }
-     };
+      const shoppingLists: ShoppingListDetailProps[] = [];
+      if (result != null && !('message' in result)) {
+        const shoppingListDetailsPromises = result.map(async (x) => ({
+          shoppingList: x,
+          productCount: await getShoppingListProductsNotChecked(x.id),
+        }));
 
-     const addNewShoppingList = () => {
-          setIsNewShoppingListModelOpen(false);
-          updateUserShoppingListView();
-     };
+        const resolvedShoppingListDetails = await Promise.all(shoppingListDetailsPromises);
+        shoppingLists.push(...resolvedShoppingListDetails);
+      }
 
-     const saveShoppingListName = async (id: number, newName: string) => {
-          await UpdateShoppingListName(id, newName);
-          updateUserShoppingListView();
-     };
+      if (result != null && 'message' in result) console.log(result.message);
+      if (Array.isArray(result)) setShoppingLists(shoppingLists);
+    }
+  };
 
-     if (selectedUser == null) {
-          return (
-               <>
-                    <h1>Login, please!</h1>
-               </>
-          );
-     }
+  const addNewShoppingList = () => {
+    setIsNewShoppingListModelOpen(false);
+    updateUserShoppingListView();
+  };
 
-     return (
-          <Box>
-               <Box display="flex" justifyContent="center" m={3}>
-                    <Grid container spacing={2}>
-                         {/* ADD NEW SHOPPING LIST */}
-                         <Grid item xs={12} sm={6}>
-                              <IconButton
-                                   onClick={() =>
-                                        setIsNewShoppingListModelOpen(true)
-                                   }
-                              >
-                                   <NoteAddIcon />
-                                   <Typography sx={{ marginLeft: 1 }}>
-                                        Add new shopping list
-                                   </Typography>
-                              </IconButton>
-                         </Grid>
+  const saveShoppingListName = async (id: number, newName: string) => {
+    await UpdateShoppingListName(id, newName);
+    updateUserShoppingListView();
+  };
 
-                         {/* MANAGE ALL PRODUCTS */}
-                         <Grid item xs={12} sm={6}>
-                              <Link href="/shoppinglist_v2/manageproducts">
-                                   <IconButton>
-                                        <SettingsIcon />
-                                        <Typography sx={{ marginLeft: 1 }}>
-                                             Manage all products
-                                        </Typography>
-                                   </IconButton>
-                              </Link>
-                         </Grid>
+  const getShoppingListProductsNotChecked = async (shoppingListId: number): Promise<number> => {
+    const result = await GetShoppingListProductsByShoppingListId(shoppingListId);
+    return result.filter((x) => !x.checked).length;
+  };
 
-                         {/*LIST ALL SHOPPING LISTS*/}
-                         {shoppingLists.length === 0 && (
-                              <Grid item>
-                                   <Typography variant="h5" align="center">
-                                        There is no shopping lists added
-                                   </Typography>
-                              </Grid>
-                         )}
-                         {shoppingLists &&
-                              shoppingLists.map((x, index) => {
-                                   return (
-                                        <Grid
-                                             key={index}
-                                             item
-                                             xs={12}
-                                             sm={6}
-                                             xl={3}
-                                        >
-                                             <ShoppingListCard
-                                                  shoppingList={x}
-                                                  deleteShoppingList={() =>
-                                                       deleteShoppingList(x)
-                                                  }
-                                                  setNewName={(name) =>
-                                                       saveShoppingListName(
-                                                            x.id,
-                                                            name
-                                                       )
-                                                  }
-                                                  url={`/shoppinglist_v2/${x.id}`}
-                                             />
+  if (selectedUser == null) {
+    return (
+      <>
+        <h1>Login, please!</h1>
+      </>
+    );
+  }
 
-                                             {/*<Card title={x.name} onDelete={() => deleteShoppingList(x)} setNewName={(name) => saveShoppingListName(x.id, name) } url={`/shoppinglist_v2/${x.id}`} />*/}
-                                        </Grid>
-                                   );
-                              })}
-                    </Grid>
-               </Box>
+  return (
+    <>
+      <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center' }} m={3}>
+        <Grid container spacing={2}>
+          {/* ADD NEW SHOPPING LIST */}
+          <Grid item xs={12} sm={6}>
+            <IconButton onClick={() => setIsNewShoppingListModelOpen(true)}>
+              <NoteAddIcon />
+              <Typography sx={{ marginLeft: 1 }}>Add new shopping list</Typography>
+            </IconButton>
+          </Grid>
 
-               {/* ADD new shopping list */}
-               {isNewShoppingListModelOpen && selectedUser != null && (
-                    <NewShoppingListModal
-                         onClose={() => addNewShoppingList()}
-                         userId={selectedUser?.id}
-                    />
-               )}
+          {/* MANAGE ALL PRODUCTS */}
+          <Grid item xs={12} sm={6}>
+            <Link href="/shoppinglist_v2/manageproducts">
+              <IconButton>
+                <SettingsIcon />
+                <Typography sx={{ marginLeft: 1 }}>Manage all products</Typography>
+              </IconButton>
+            </Link>
+          </Grid>
 
-               {/* DELETE shopping list */}
-               {isDeleteShoppingListModelOpen && (
-                    <DeleteShoppingListModal
-                         onClose={() => onCloseDelete()}
-                         shoppingList={selectedShoppingList}
-                    />
-               )}
+          {/*LIST ALL SHOPPING LISTS*/}
+          {shoppingLists.length === 0 && (
+            <Grid item>
+              <Typography variant="h5">There is no shopping lists added</Typography>
+            </Grid>
+          )}
 
-               {/* EDIT shopping list name */}
-               {isEditShoppingListModelOpen && (
-                    <EditShoppingListNameModal
-                         onClose={() => onCloseEdit()}
-                         shoppingList={selectedShoppingList}
-                    />
-               )}
-          </Box>
-     );
+          {shoppingLists &&
+            shoppingLists.map((x, index) => {
+              return (
+                <Grid key={index} item xs={12} sm={6} xl={3}>
+                  <ShoppingListCard
+                    shoppingList={x.shoppingList}
+                    deleteShoppingList={() => deleteShoppingList(x.shoppingList)}
+                    setNewName={(name) => saveShoppingListName(x.shoppingList.id, name)}
+                    url={`/shoppinglist_v2/${x.shoppingList.id}`}
+                    productCount={x.productCount}
+                  />
+                </Grid>
+              );
+            })}
+        </Grid>
+      </Box>
+
+      {/* ADD new shopping list */}
+      {isNewShoppingListModelOpen && selectedUser != null && <NewShoppingListModal onClose={() => addNewShoppingList()} userId={selectedUser?.id} />}
+
+      {/* DELETE shopping list */}
+      {isDeleteShoppingListModelOpen && <DeleteShoppingListModal onClose={() => onCloseDelete()} shoppingList={selectedShoppingList} />}
+
+      {/* EDIT shopping list name */}
+      {isEditShoppingListModelOpen && <EditShoppingListNameModal onClose={() => onCloseEdit()} shoppingList={selectedShoppingList} />}
+    </>
+  );
 }
