@@ -9,14 +9,14 @@ export type iconType = {
 }
 
 type ProductProps = {
-    icon: iconType;
-    name: string;
-    iconAction: () => void;
-    editAction?: () => void;
+  icon: iconType;
+  name: string;
+  iconAction: () => void;
+  editAction?: () => void;
 }
 
 
-export default function ProductListItem({icon: Icon, name, iconAction, editAction} : ProductProps) {
+export default function ProductListItem({ icon: Icon, name, iconAction, editAction }: ProductProps) {
 
   const theme = useTheme();
   const isPhone = useMediaQuery(theme.breakpoints.down('sm'));
@@ -32,32 +32,32 @@ export default function ProductListItem({icon: Icon, name, iconAction, editActio
     marginRight: '10px'
   }
 
-  return (   
-      <Box sx={ {border: 'solid 1px', borderRadius: 6}}>
-        <List disablePadding>
-          <ListItem disablePadding sx={ {
-                        ":hover": {
-                        backgroundColor: '#DEB887',
-                        cursor: 'pointer',
-                        borderRadius: 6,
-                        },                        
-                        }}>
-            <ListItemButton sx={ {
-                        ":hover": {
-                        backgroundColor: 'transparent',
-                        },
-                        }}>
-              
-              <ListItemText primary={name} />
-              
-              <ListItemIcon>
-                  { editAction && <EditIcon style={ editIconStyle } onClick={editAction}/> }
-                  
-                  <Icon.icon style={ iconStyle } onClick={iconAction}/>
-              </ListItemIcon>
-              
-            </ListItemButton>
-          </ListItem>
+  return (
+    <Box sx={{ border: 'solid 1px', borderRadius: 6, width: '400px' }}>
+      <List disablePadding>
+        <ListItem disablePadding sx={{
+          ":hover": {
+            backgroundColor: '#DEB887',
+            cursor: 'pointer',
+            borderRadius: 6,
+          },
+        }}>
+          <ListItemButton sx={{
+            ":hover": {
+              backgroundColor: 'transparent',
+            },
+          }}>
+
+            <ListItemText primary={name} />
+
+            <ListItemIcon>
+              {editAction && <EditIcon style={editIconStyle} onClick={editAction} />}
+
+              <Icon.icon style={iconStyle} onClick={iconAction} />
+            </ListItemIcon>
+
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   )
