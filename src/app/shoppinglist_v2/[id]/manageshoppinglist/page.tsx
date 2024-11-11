@@ -120,55 +120,41 @@ export default function Page({ params }: { params: { id: number } }) {
                     </Button>
                </Box>
 
-               <Box sx={ListBoxStyle}>
+               <Box sx={BoxStyle} m={1}>
                     {addingProductToShoppingList ? (
-                         <Box sx={ListItemStyle}>
-                              {allProducts.map((product, index) => {
-                                   return (
-                                        <div
-                                             key={index}
-                                             style={{ margin: "10px" }}
-                                        >
-                                             <ProductListItem
-                                                  icon={
-                                                       IconPropsForAddingProduct
-                                                  }
-                                                  name={product.name}
-                                                  iconAction={() =>
-                                                       addProductToShoppingList(
-                                                            product.id
-                                                       )
-                                                  }
-                                             />
-                                        </div>
-                                   );
-                              })}
-                         </Box>
+                         <ProductListComponent products={allProducts} shownIcon={IconPropsForAddingProduct} action={addProductToShoppingList} />
                     ) : (
-                         <Box sx={ListItemStyle}>
-                              {shoppingListProducts.map((product, index) => {
-                                   return (
-                                        <div
-                                             key={index}
-                                             style={{ margin: "10px" }}
-                                        >
-                                             <ProductListItem
-                                                  icon={
-                                                       IconPropsForDeletingProduct
-                                                  }
-                                                  name={product.name}
-                                                  iconAction={() =>
-                                                       removeProductFromList(
-                                                            product.id
-                                                       )
-                                                  }
-                                             />
-                                        </div>
-                                   );
-                              })}
-                         </Box>
+                         <ProductListComponent products={shoppingListProducts} shownIcon={IconPropsForDeletingProduct} action={removeProductFromList} />
                     )}
                </Box>
+
           </>
+     );
+}
+
+type ProductListComponentProps = {
+     products: ShoppingListProductsType[] | ProductType[],
+     shownIcon: iconType,
+     action: (id: number) => Promise<void>,
+};
+
+const ProductListComponent = ({ products, shownIcon, action }: ProductListComponentProps) => {
+     return (
+          <Box sx={ListItemStyle}>
+               {products.map((product, index) => {
+                    return (
+                         <div
+                              key={index}
+                              style={{ margin: "10px" }}
+                         >
+                              <ProductListItem
+                                   icon={shownIcon}
+                                   name={product.name}
+                                   iconAction={() => action(product.id)}
+                              />
+                         </div>
+                    );
+               })}
+          </Box>
      );
 }
