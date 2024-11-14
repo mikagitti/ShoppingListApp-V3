@@ -1,7 +1,7 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-import { Box, Button, Divider } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
@@ -12,6 +12,8 @@ import {
 
 import ProductListItem, { iconType } from "../components/productListItem";
 import { ShoppingListProductsType } from "@/Database/types";
+import { BoxStyle, ListItemStyle } from "../components/Styles";
+import LoginContext from "@/Context/login/LoginContext";
 
 const IconPropsForAddingProduct: iconType = {
     icon: AddCircleIcon,
@@ -22,9 +24,8 @@ const IconPropsForDeletingProduct: iconType = {
     color: 'red',
 };
 
-const itemListBoxSize: string = '500px';
-
 export default function Page({ params }: { params: { id: number, name: string } }) {
+    const { selectedUser } = useContext(LoginContext);
 
     const [showCheckedList, setShowCheckedList] = useState<boolean>(false)
     const [shoppingListProducts, setShoppingListProducts] = useState<ShoppingListProductsType[]>([]);
@@ -51,40 +52,56 @@ export default function Page({ params }: { params: { id: number, name: string } 
         await UpdateProductCheckedInShoppingListByShoppingListIdAndProductId(params.id, product.id, !product.checked);
     }
 
+    if (selectedUser == null) {
+        return (
+            <>
+                <h1>Login, please!</h1>
+            </>
+        );
+    }
+
     return (
-
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Box sx={{ maxWidth: itemListBoxSize }}>
-                {
-                    shoppingListProducts.map((product, index) =>
-                        product.checked == false &&
-                        <div key={index} style={{ margin: '10px' }}>
-                            <ProductListItem icon={IconPropsForAddingProduct} name={product.name} iconAction={() => checkProduct(product)} />
-                        </div>
-                    )
-                }
-
-                <Divider />
-
-                <div style={{ margin: '10px' }}>
-                    <Button sx={{}} onClick={() => setShowCheckedList(!showCheckedList)}>
-                        {showCheckedList ? 'Hide in Cart' : 'Show in Cart'}
-                    </Button>
+        <>
+            <div style={BoxStyle}>
+                <div style={ListItemStyle}>
+                    {
+                        shoppingListProducts.map((product, index) =>
+                            product.checked == false &&
+                            <div key={index} style={{ margin: '10px' }}>
+                                <ProductListItem icon={IconPropsForAddingProduct} name={product.name} iconAction={() => checkProduct(product)} />
+                            </div>
+                        )
+                    }
                 </div>
+            </div>
 
-                {
-                    showCheckedList &&
-                    shoppingListProducts.map((product, index) => (
-                        product.checked == true &&
+            <Divider />
 
-                        <div key={index} style={{ margin: '10px' }}>
-                            <ProductListItem icon={IconPropsForDeletingProduct} name={product.name} iconAction={() => checkProduct(product)} />
-                        </div>
-                    )
-                    )
-                }
+            <div style={BoxStyle}>
+                <Button sx={{}} onClick={() => setShowCheckedList(!showCheckedList)}>
+                    {showCheckedList ? 'Hide in Cart' : 'Show in Cart'}
+                </Button>
+            </div>
 
-            </Box>
-        </Box>
+            <div style={BoxStyle}>
+                <div style={ListItemStyle}>
+                    {
+                        showCheckedList &&
+                        shoppingListProducts.map((product, index) => (
+                            product.checked == true &&
+
+                            <div key={index} style={{ margin: '10px' }}>
+                                <ProductListItem
+                                    icon={IconPropsForDeletingProduct}
+                                    name={product.name}
+                                    iconAction={() => checkProduct(product)}
+                                />
+                            </div>
+                        )
+                        )
+                    }
+                </div>
+            </div>
+        </>
     )
 }
