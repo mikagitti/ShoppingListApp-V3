@@ -33,7 +33,7 @@ export default function ProductListItem({ icon: Icon, name, iconAction, editActi
   }
 
   return (
-    <Box sx={{ border: 'solid 1px', borderRadius: 6, width: '400px' }}>
+    <Box sx={{ border: 'solid 1px', borderRadius: 6, width: '100%' }}>
       <List disablePadding>
         <ListItem disablePadding sx={{
           ":hover": {

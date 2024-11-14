@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Box, Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,8 +20,11 @@ import {
 } from "../../components/Styles";
 import ProductListItem, { iconType } from "../../components/productListItem";
 import { ProductType, ShoppingListProductsType } from "@/Database/types";
+import LoginContext from "@/Context/login/LoginContext";
 
 export default function Page({ params }: { params: { id: number } }) {
+     const { selectedUser } = useContext(LoginContext);
+
      const IconPropsForAddingProduct: iconType = {
           icon: AddShoppingCartIcon,
           color: "green",
@@ -87,6 +90,14 @@ export default function Page({ params }: { params: { id: number } }) {
           await AddNewProductToShoppingList(shoppingListId, id);
           await fetchShoppingListProductsToMemory();
      };
+
+     if (selectedUser == null) {
+          return (
+               <>
+                    <h1>Login, please!</h1>
+               </>
+          );
+     }
 
      return (
           <>
