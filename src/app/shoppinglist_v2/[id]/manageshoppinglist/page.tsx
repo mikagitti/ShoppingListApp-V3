@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 
 import { Box, Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,7 +22,10 @@ import ProductListItem, { iconType } from "../../components/productListItem";
 import { ProductType, ShoppingListProductsType } from "@/Database/types";
 import LoginContext from "@/Context/login/LoginContext";
 
-export default function Page({ params }: { params: { id: number } }) {
+export default function Page({ params }: { params: Promise<{ id: number }> }) {
+     const { id } = use(params);
+     const shoppingListId: number = id;
+
      const { selectedUser } = useContext(LoginContext);
 
      const IconPropsForAddingProduct: iconType = {
@@ -34,8 +37,6 @@ export default function Page({ params }: { params: { id: number } }) {
           icon: DeleteIcon,
           color: "red",
      };
-
-     const shoppingListId: number = params.id;
 
      const [shoppingListProducts, setShoppingListProducts] = useState<
           ShoppingListProductsType[]
@@ -67,7 +68,7 @@ export default function Page({ params }: { params: { id: number } }) {
 
      const fetchShoppingListProductsToMemory = async () => {
           const shoppingListProducts: ShoppingListProductsType[] =
-               await GetShoppingListProductsByShoppingListId(params.id);
+               await GetShoppingListProductsByShoppingListId(shoppingListId);
           setShoppingListProducts(shoppingListProducts);
      };
 

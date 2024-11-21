@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 
 import { Button, Divider } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -24,7 +24,10 @@ const IconPropsForDeletingProduct: iconType = {
     color: 'red',
 };
 
-export default function Page({ params }: { params: { id: number, name: string } }) {
+export default function Page({ params }: { params: Promise<{ id: number, name: string }> }) {
+
+    const { id } = use(params);
+
     const { selectedUser } = useContext(LoginContext);
 
     const [showCheckedList, setShowCheckedList] = useState<boolean>(false)
@@ -37,7 +40,7 @@ export default function Page({ params }: { params: { id: number, name: string } 
 
 
     const fetchShoppingListProductsToMemory = async () => {
-        const result: ShoppingListProductsType[] = await GetShoppingListProductsByShoppingListId(params.id);
+        const result: ShoppingListProductsType[] = await GetShoppingListProductsByShoppingListId(id);
         setShoppingListProducts(result);
     }
 
@@ -49,7 +52,7 @@ export default function Page({ params }: { params: { id: number, name: string } 
     }
 
     const saveProductCheckStatusToShoppingList = async (product: ShoppingListProductsType) => {
-        await UpdateProductCheckedInShoppingListByShoppingListIdAndProductId(params.id, product.id, !product.checked);
+        await UpdateProductCheckedInShoppingListByShoppingListIdAndProductId(id, product.id, !product.checked);
     }
 
     if (selectedUser == null) {
