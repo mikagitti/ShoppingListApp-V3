@@ -83,7 +83,7 @@ export default function MainNavBar() {
         </AppBarIconLink>
 
         <AppBarIconLink href="/shoppinglist_v2">
-          <ShoppingCartIcon sx={iconStyle} />
+          <ShoppingCartIcon sx={{ ...iconStyle, color: selectedUser ? 'green' : 'red' }} />
           <Typography sx={customTypography}>Shopping list</Typography>
         </AppBarIconLink>
 
@@ -174,7 +174,7 @@ export default function MainNavBar() {
                 </AppBarIconLink>
 
                 <AppBarIconLink href="/shoppinglist_v2">
-                  <ShoppingCartIcon sx={iconStyle} />
+                  <ShoppingCartIcon sx={{ ...iconStyle, color: selectedUser ? 'green' : 'red' }} />
                 </AppBarIconLink>
 
                 <AppBarIconLink href="/about">
