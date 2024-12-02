@@ -12,8 +12,20 @@ type CardProps = {
   productCount: number;
 };
 
-const CustomCard = styled(Card)(({ theme }) => ({
-  boxShadow: theme.shadows[10],
+const CustomStyledCardHeader = styled(Box)(() => ({
+  backgroundColor: 'green',
+  height: '1.6rem',
+}));
+
+const CustomStyledCard = styled(Card)(({ theme }) => ({
+  width: '300px',
+  borderRadius: '10px',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  height: '100%',
 }));
 
 const CustomLink = styled(Link)(({ theme }) => ({
@@ -28,7 +40,7 @@ const CustomLink = styled(Link)(({ theme }) => ({
   alignItems: 'center',
 }));
 
-const CustomButton = styled(Button)(({ theme }) => ({
+const CustomStyledButton = styled(Button)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   textDecoration: 'none',
   '&:hover': {
@@ -38,14 +50,15 @@ const CustomButton = styled(Button)(({ theme }) => ({
   gap: 2,
   flexDirection: 'row',
   alignItems: 'center',
-  fontSize: '12px',
+  fontSize: '0.7rem',
+
 }));
 
-const StyledBadge = styled(Badge)({
+const CustomStyledBadge = styled(Badge)({
   '.MuiBadge-badge': {
     right: 13,
     top: 13,
-    border: `0.5px solid white`,
+    border: `0.1rem solid white`,
     padding: '0 4px',
     margin: '0 2px',
     borderRadius: '50%',
@@ -65,36 +78,37 @@ export default function ShoppingListCard({ shoppingList, deleteShoppingList, set
   };
 
   return (
-    <StyledBadge badgeContent={productCount > 0 ? productCount : '0'} color="primary">
-      <CustomCard>
+    <CustomStyledBadge badgeContent={productCount > 0 ? productCount : '0'} color="primary">
+      <CustomStyledCard>
+        <CustomStyledCardHeader />
         <CardContent>
           {isEditing ? (
             <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           ) : (
             <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" justifyItems="center">
               <CustomLink href={url}>
-                <Typography>{shoppingList.name}</Typography>
+                <Typography noWrap>{shoppingList.name}</Typography>
               </CustomLink>
             </Box>
           )}
         </CardContent>
-        <CardActions>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" justifyItems="center" gap={2}>
-            <CustomButton onClick={() => handleEditClick()}>{isEditing ? 'Save' : 'Rename'}</CustomButton>
-            {isEditing && <CustomButton onClick={() => setIsEditing(false)}>Close</CustomButton>}
+        <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
+          <Box display="flex" flexDirection="row" gap={2}>
+            <CustomStyledButton onClick={() => handleEditClick()}>{isEditing ? 'Save' : 'Rename'}</CustomStyledButton>
+            {isEditing && <CustomStyledButton onClick={() => setIsEditing(false)}>Close</CustomStyledButton>}
 
             {!isEditing && (
               <>
                 <CustomLink href={`/shoppinglist_v2/${shoppingList.id}/manageshoppinglist`}>
-                  <CustomButton>Edit</CustomButton>
+                  <CustomStyledButton>Edit</CustomStyledButton>
                 </CustomLink>
 
-                <CustomButton onClick={() => deleteShoppingList()}>Delete</CustomButton>
+                <CustomStyledButton onClick={() => deleteShoppingList()}>Delete</CustomStyledButton>
               </>
             )}
           </Box>
         </CardActions>
-      </CustomCard>
-    </StyledBadge>
+      </CustomStyledCard>
+    </CustomStyledBadge>
   );
 }
