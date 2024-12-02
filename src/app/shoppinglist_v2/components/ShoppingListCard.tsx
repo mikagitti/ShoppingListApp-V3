@@ -83,7 +83,7 @@ export default function ShoppingListCard({ shoppingList, deleteShoppingList, set
         <CustomStyledCardHeader />
         <CardContent>
           {isEditing ? (
-            <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
+            <input type="text" style={{ width: '100%' }} value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           ) : (
             <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" justifyItems="center">
               <CustomLink href={url}>
