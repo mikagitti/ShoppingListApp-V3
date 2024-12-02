@@ -3,7 +3,8 @@
 import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import { Box, Grid, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography, Container } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -64,8 +65,11 @@ export default function ShoppingListV2() {
         shoppingLists.push(...resolvedShoppingListDetails);
       }
 
-      if (result != null && 'message' in result) console.log(result.message);
-      if (Array.isArray(result)) setShoppingLists(shoppingLists);
+      if (result != null && 'message' in result)
+        console.log(result.message);
+
+      if (Array.isArray(result))
+        setShoppingLists(shoppingLists);
     }
   };
 
@@ -93,66 +97,69 @@ export default function ShoppingListV2() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-      <Box sx={{ maxWidth: '1100px' }}>
-        <Grid container spacing={2} mt={1}>
-          {/* ADD NEW SHOPPING LIST */}
-          <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center' }}>
-              <IconButton onClick={() => setIsNewShoppingListModelOpen(true)}>
-                <NoteAddIcon />
-                <Typography>Add new shopping list</Typography>
-              </IconButton>
-            </Box>
-          </Grid>
-
-          {/* MANAGE ALL PRODUCTS */}
-          <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', alignItems: 'center' }}>
-              <Link href="/shoppinglist_v2/manageproducts">
-                <IconButton>
-                  <SettingsIcon />
-                  <Typography sx={{ marginLeft: 1 }}>Manage all products</Typography>
-                </IconButton>
-              </Link>
-            </Box>
-          </Grid>
-
-          {/*LIST ALL SHOPPING LISTS*/}
-          {shoppingLists.length === 0 && (
-            <Grid item>
-              <Typography variant="h5">There is no shopping lists added</Typography>
-            </Grid>
-          )}
+    <Container >
+      <Grid container spacing={2} m={2} justifyContent="center" >
+        {/* ADD NEW SHOPPING LIST */}
+        <Grid>
+          <IconButton onClick={() => setIsNewShoppingListModelOpen(true)}>
+            <NoteAddIcon />
+            <Typography style={{ marginLeft: '5px' }}>Add new shopping list</Typography>
+          </IconButton>
         </Grid>
 
-        <Grid container spacing={2} mt={1}>
-          {shoppingLists &&
-            shoppingLists.map((x, index) => {
-              return (
-                <Grid key={index} item xs={12} sm={6} xl={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <ShoppingListCard
-                    shoppingList={x.shoppingList}
-                    deleteShoppingList={() => deleteShoppingList(x.shoppingList)}
-                    setNewName={(name) => saveShoppingListName(x.shoppingList.id, name)}
-                    url={`/shoppinglist_v2/${x.shoppingList.id}`}
-                    productCount={x.productCount}
-                  />
-                </Grid>
-              );
-            })}
+        {/* MANAGE ALL PRODUCTS */}
+        <Grid>
+          <Link href="/shoppinglist_v2/manageproducts">
+            <IconButton>
+              <SettingsIcon />
+              <Typography style={{ marginLeft: '5px' }}>Manage all products</Typography>
+            </IconButton>
+          </Link>
         </Grid>
+      </Grid>
+
+      {shoppingLists.length === 0 && (
+        <Grid container justifyContent="center" margin={5}>
+          <Typography variant="h5">There is no shopping lists added</Typography>
+        </Grid>
+      )}
+
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '10px',
+        marginTop: '10px',
+
+      }}>
+        {shoppingLists &&
+          shoppingLists.map((x, index) => {
+            return (
+
+              <ShoppingListCard
+                key={index}
+                shoppingList={x.shoppingList}
+                deleteShoppingList={() => deleteShoppingList(x.shoppingList)}
+                setNewName={(name) => saveShoppingListName(x.shoppingList.id, name)}
+                url={`/shoppinglist_v2/${x.shoppingList.id}`}
+                productCount={x.productCount}
+              />
+
+            );
+          })}
+      </div>
+
+      {/* ADD new shopping list */}
+      {isNewShoppingListModelOpen && selectedUser != null && <NewShoppingListModal onClose={() => addNewShoppingList()} userId={selectedUser?.id} />}
+
+      {/* DELETE shopping list */}
+      {isDeleteShoppingListModelOpen && <DeleteShoppingListModal onClose={() => onCloseDelete()} shoppingList={selectedShoppingList} />}
+
+      {/* EDIT shopping list name */}
+      {isEditShoppingListModelOpen && <EditShoppingListNameModal onClose={() => onCloseEdit()} shoppingList={selectedShoppingList} />}
 
 
-        {/* ADD new shopping list */}
-        {isNewShoppingListModelOpen && selectedUser != null && <NewShoppingListModal onClose={() => addNewShoppingList()} userId={selectedUser?.id} />}
-
-        {/* DELETE shopping list */}
-        {isDeleteShoppingListModelOpen && <DeleteShoppingListModal onClose={() => onCloseDelete()} shoppingList={selectedShoppingList} />}
-
-        {/* EDIT shopping list name */}
-        {isEditShoppingListModelOpen && <EditShoppingListNameModal onClose={() => onCloseEdit()} shoppingList={selectedShoppingList} />}
-      </Box>
-    </Box>
+    </Container>
   );
 }
