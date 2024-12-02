@@ -46,15 +46,18 @@ export default function ShoppingListV2() {
   };
 
   const onCloseDelete = () => {
+    console.log('Deleted shopping list');
     updateUserShoppingListView();
     setIsDeleteShoppingListModelOpen(false);
   };
 
   const updateUserShoppingListView = async () => {
     if (selectedUser != null) {
+      console.log('Step 1');
       const result: ShoppingListType[] | { message: string } | null = await GetShoppingListsByUserId(selectedUser?.id);
 
       const shoppingLists: ShoppingListDetailProps[] = [];
+
       if (result != null && !('message' in result)) {
         const shoppingListDetailsPromises = result.map(async (x) => ({
           shoppingList: x,
@@ -65,11 +68,16 @@ export default function ShoppingListV2() {
         shoppingLists.push(...resolvedShoppingListDetails);
       }
 
-      if (result != null && 'message' in result)
+      if (result != null && 'message' in result) {
         console.log(result.message);
+      }
 
-      if (Array.isArray(result))
+      if (Array.isArray(result)) {
         setShoppingLists(shoppingLists);
+      }
+      else {
+        setShoppingLists([]);
+      }
     }
   };
 
