@@ -1,3 +1,6 @@
+import { useContext, useState } from "react";
+import Link from "next/link";
+
 import {
      Box,
      Button,
@@ -6,11 +9,11 @@ import {
      Typography,
      styled,
 } from "@mui/material";
-import { UpdateUserName } from "@/Database/dbConnectionV3";
-import { useContext, useState } from "react";
-import LoginContext from "@/Context/login/LoginContext";
 import EditIcon from "@mui/icons-material/Edit";
-import Link from "next/link";
+import LoginIcon from '@mui/icons-material/Login';
+
+import { UpdateUserName } from "@/Database/dbConnectionV3";
+import LoginContext from "@/Context/login/LoginContext";
 import { UserType } from "@/Database/types";
 
 type loginProp = {
@@ -18,17 +21,23 @@ type loginProp = {
 };
 
 const frameStyle = {
-     border: "solid 5px gray",
+     border: "solid 4px gray",
      borderRadius: "25px",
+     m: "1px 10px",
      p: "10px",
 };
 
 const boxStyle = {
      display: "flex",
+     justifyContent: "space-between",
+     alignItems: "center",
+};
+
+const leftSection = {
+     display: "flex",
      flexDirection: "row",
      alignItems: "center",
      gap: 2,
-     p: "10px",
 };
 
 const CustomLink = styled(Link)(({ theme }) => ({
@@ -38,9 +47,10 @@ const CustomLink = styled(Link)(({ theme }) => ({
           color: theme.palette.primary.light,
      },
      display: "flex",
-     gap: 2,
      flexDirection: "row",
      alignItems: "center",
+     border: "solid 1px",
+     borderRadius: "5px",
 }));
 
 const CustomButton = styled(Button)(({ theme }) => ({
@@ -53,7 +63,6 @@ const CustomButton = styled(Button)(({ theme }) => ({
      gap: 2,
      flexDirection: "row",
      alignItems: "center",
-     border: "0px",
 }));
 
 export default function LoginCard({ user }: loginProp) {
@@ -74,6 +83,13 @@ export default function LoginCard({ user }: loginProp) {
      };
 
      const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+          const name = event.target.value;
+
+          if (name.length > 49) {
+               return;
+          }
+
           setNewName(event.target.value);
      };
 
@@ -87,8 +103,8 @@ export default function LoginCard({ user }: loginProp) {
                               value={newName}
                               onChange={handleNameChange}
                               sx={{
-                                   width: 300, // Custom width
-                                   bgcolor: "background.paper", // Custom background color
+                                   width: "100%",
+                                   m: 1,
                               }}
                          />
                          <CustomButton onClick={() => saveUserName()}>
@@ -97,31 +113,26 @@ export default function LoginCard({ user }: loginProp) {
                     </Box>
                ) : (
                     <Box sx={boxStyle}>
-                         <Box>
-                              <IconButton
-                                   onClick={() => setOpenUpdate(!openUpdate)}
-                                   color="primary"
-                              >
-                                   <EditIcon />
-                              </IconButton>
-                         </Box>
+                         <Box sx={leftSection}>
+                              <Box>
+                                   <IconButton sx={{ border: 'solid 1px' }} onClick={() => setOpenUpdate(!openUpdate)}>
+                                        <EditIcon />
+                                   </IconButton>
+                              </Box>
 
-                         <Box>
-                              <Typography
-                                   variant="h5"
-                                   sx={{ textTransform: "uppercase" }}
-                              >
-                                   {newName}
-                              </Typography>
+                              <Box>
+                                   <Typography sx={{ textTransform: "uppercase" }}>
+                                        {newName}
+                                   </Typography>
+                              </Box>
                          </Box>
 
                          <Box>
                               <CustomLink href="/shoppinglist_v2">
-                                   <CustomButton
-                                        onClick={() => clickSelect(user)}
-                                   >
-                                        Log me in
-                                   </CustomButton>
+                                   <IconButton onClick={() => clickSelect(user)}>
+                                        <Typography>Login</Typography>
+                                        <LoginIcon />
+                                   </IconButton>
                               </CustomLink>
                          </Box>
                     </Box>
