@@ -8,7 +8,7 @@ export default function Home() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: { xs: "65vh", md: "calc(100vh - 64px)" },
+                    height: "60svh",
                }}
           >
                <Typography
