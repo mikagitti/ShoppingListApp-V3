@@ -13,7 +13,6 @@ export default function Register({ onClose }: ModalProps) {
 
      const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
-          console.log("Submitting:", { username, password });
           if (username && password) {
                await AddNewAdmin(username, password);
                onClose();

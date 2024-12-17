@@ -22,7 +22,6 @@ export default function Login({ onClose }: ModalProps) {
                     username,
                     password
                );
-               console.log("User is: ", isAdminUserValid);
 
                if (isAdminUserValid) {
                     selectAdmin(username);

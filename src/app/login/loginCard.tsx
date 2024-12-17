@@ -76,7 +76,6 @@ export default function LoginCard({ user }: loginProp) {
      };
 
      const saveUserName = async () => {
-          console.log(newName);
           await UpdateUserName({ id: user.id, name: newName });
           user.name = newName;
           setOpenUpdate(false);

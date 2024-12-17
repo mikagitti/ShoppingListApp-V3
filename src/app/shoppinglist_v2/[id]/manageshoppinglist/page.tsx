@@ -89,7 +89,6 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
      };
 
      const fetchShoppingListProductsToMemory = async () => {
-          console.log("fetchShoppingListProductsToMemory");
           const shoppingListProducts: ShoppingListProductsType[] =
                await GetShoppingListProductsByShoppingListId(shoppingListId);
           setShoppingListProducts(shoppingListProducts);
@@ -100,7 +99,6 @@ export default function Page({ params }: { params: Promise<{ id: number }> }) {
                (product) =>
                     !shoppingListProducts.some((b) => b.id === product.id)
           );
-          console.log("filteredProducts", filteredProducts);
           setAllProducts(filteredProducts);
      };
 

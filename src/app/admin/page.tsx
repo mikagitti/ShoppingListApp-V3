@@ -146,7 +146,6 @@ export default function Home() {
   );
 
   const deleteUser = async (user: User) => {
-    console.log('Lets Delete user!!');
     userRef.current = user;
     setConfirmationModalOpen(true);
   };

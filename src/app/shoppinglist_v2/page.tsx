@@ -46,14 +46,12 @@ export default function ShoppingListV2() {
   };
 
   const onCloseDelete = () => {
-    console.log('Deleted shopping list');
     updateUserShoppingListView();
     setIsDeleteShoppingListModelOpen(false);
   };
 
   const updateUserShoppingListView = async () => {
     if (selectedUser != null) {
-      console.log('Step 1');
       const result: ShoppingListType[] | { message: string } | null = await GetShoppingListsByUserId(selectedUser?.id);
 
       const shoppingLists: ShoppingListDetailProps[] = [];
